@@ -1,0 +1,38 @@
+import urllib.request
+import random
+import time
+
+proxies = [
+    "http://123.456.789.0:8080",
+    "http://234.567.890.1:3128",
+]
+
+user_agents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+]
+
+url = "https://httpbin.org/ip"
+
+def fetch_with_proxy(url, retries=3):
+    for i in range(retries):
+        proxy = random.choice(proxies)
+        user_agent = random.choice(user_agents)
+        proxy_handler = urllib.request.ProxyHandler({"http": proxy, "https": proxy})
+        opener = urllib.request.build_opener(proxy_handler)
+        opener.addheaders = [('User-Agent', user_agent)]
+        try:
+            with opener.open(url, timeout=5) as response:
+                return response.read().decode()
+        except Exception as e:
+            print(f"Attempt {i+1} failed: {e}")
+            time.sleep(2)
+    return None
+
+result = fetch_with_proxy(url)
+if result:
+    print("Success:", result)
+else:
+    print("Failed to fetch the page after retries.")
+
+
