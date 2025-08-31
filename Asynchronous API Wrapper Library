@@ -1,0 +1,17 @@
+import urllib.request
+import json
+
+def fetch_user_info(username):
+    url = f"https://api.github.com/users/{username}"
+    try:
+        with urllib.request.urlopen(url) as response:
+            data = json.loads(response.read().decode())
+            print(f"\nName: {data.get('name')}")
+            print(f"Bio: {data.get('bio')}")
+            print(f"Public Repos: {data.get('public_repos')}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    user = input("Enter GitHub username: ")
+    fetch_user_info(user)
